@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 Cek Khodam 🌊</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+    <style>
+        body {
+            background-color: rgba(28, 132, 230, 0.87); /* Background lebih gelap */
+            font-family: 'Poppins', sans-serif; /* Font modern Poppins */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .card {
+            background-color: rgb(255, 255, 255);
+            padding: 20px;
+            border: 1px solid #ffffff; /* Border putih */
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(28, 43, 72, 0.5); /* Shadow lebih gelap */
+            backdrop-filter: blur(10px); /* Blur lebih kuat */
+            position: relative; /* Untuk positioning spinner */
+        }
+
+        h1, p {
+            color: #3f52af; /* Warna font jingga ke kuningan */
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #3f52af; /* Border input */
+            border-radius: 200px;
+            text-align: center;
+            width: 80%;
+            margin-bottom: 20px;
+            background-color: transparent;
+            color: #1879b1;
+        }
+
+        button {
+            background-color: #286fa9;
+            color: #ffffff;
+            padding: 10px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 200px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            background-color: #342cc4;
+            transform: translateY(-3px); /* Efek naik saat hover */
+            box-shadow: 0 6px 12px rgba(18, 32, 99, 0.3); /* Shadow lebih dalam saat hover */
+        }
+
+        .footer {
+            color: #97D3FF;
+            font-weight: bold;
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #result {
+            display: none;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(182, 205, 231, 0.667);
+            border-radius: 50%;
+            border-top: 4px solid #1e40e7; /* Warna biru */
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -20px; /* Setengah dari tinggi */
+            margin-left: -20px; /* Setengah dari lebar */
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Cek Khodam</h1>
+        <p>Masukkan nama untuk mengetahui khodam</p>
+        <input type="text" id="nameInput" placeholder="Ketik nama kamu di sini">
+        <button onclick="cekKhodam()">Cek Khodam</button>
+        <div id="loading" class="loading-spinner" style="display: none;"></div>
+        <button onclick="resetForm()" style="margin-top: 20px;">Cek Lagi</button>
+        <div id="result">
+            <h2 id="khodamName"></h2>
+            <p id="khodamMeaning"></p>
+        </div>
+    </div>
+    <div class="footer">
+        © 2024 <a target="_blank">bigwaveentertainment</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        function cekKhodam() {
+            const nameInput = document.getElementById('nameInput').value;
+            if (!nameInput) {
+                Swal.fire({
+                    title: 'GAK BOLEH KOSONG!😡',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            document.getElementById('loading').style.display = 'block'; // Tampilkan spinner
+            setTimeout(() => {
+                const khodams = [
+                { name: "Kunti Seriosa", meaning: "Kamu memiliki suara yang tinggi dan merdu seperti kunti seriosa." },
+                { name: "Vampir Riff & Runs", meaning: "Kamu mahir dalam teknik vokal yang rumit dan cepat seperti vampir." },
+                { name: "Tuyul Growl", meaning: "Kamu memiliki suara growl yang dalam dan kuat seperti tuyul." },
+                { name: "Nyi Roro Jazz", meaning: "Kamu memiliki alunan suara jazz yang menawan seperti Nyi Roro Kidul." },
+                { name: "Pocong Rap", meaning: "Kamu bisa mengeluarkan lirik dengan cepat dan jelas seperti pocong rap." },
+                { name: "Genderuwo Bass", meaning: "Kamu memiliki suara bass yang dalam dan resonan seperti genderuwo." },
+                { name: "Leak Melody", meaning: "Kamu mampu menciptakan melodi indah dan memikat seperti leak." },
+                { name: "Wewe Gombel Opera", meaning: "Kamu memiliki suara opera yang kuat dan dramatis seperti wewe gombel." },
+                { name: "Sundel Bolong Scream", meaning: "Kamu memiliki scream yang tajam dan intens seperti sundel bolong." },
+                { name: "Demang Dangdut", meaning: "Kamu bisa menyanyi dangdut dengan ritme yang memukau seperti demang." },
+                { name: "Buto Ijo Metal", meaning: "Kamu memiliki suara metal yang keras dan agresif seperti Buto Ijo." },
+                { name: "Jenglot Blues", meaning: "Kamu memiliki suara blues yang dalam dan menyentuh hati seperti jenglot." },
+                { name: "Banaspati Pop", meaning: "Kamu memiliki suara pop yang ceria dan menyenangkan seperti banaspati." },
+                { name: "Siluman Reggae", meaning: "Kamu memiliki alunan suara reggae yang santai dan menenangkan seperti siluman." },
+                { name: "Kalong Classic", meaning: "Kamu memiliki suara klasik yang elegan dan abadi seperti kalong." },
+                { name: "Bajang Folk", meaning: "Kamu memiliki suara folk yang hangat dan mengundang seperti bajang." },
+                { name: "Kuntilanak Ballad", meaning: "Kamu memiliki suara ballad yang penuh perasaan seperti kuntilanak." },
+                { name: "Gendruwo Hip-Hop", meaning: "Kamu memiliki ritme hip-hop yang keren dan penuh energi seperti gendruwo." },
+                { name: "Palasik Soul", meaning: "Kamu memiliki suara soul yang penuh emosi seperti palasik." },
+                { name: "Dedemit Punk", meaning: "Kamu memiliki suara punk yang penuh semangat dan pemberontakan seperti dedemit." },
+                { name: "Sundel Bolong EDM", meaning: "Kamu memiliki suara EDM yang enerjik dan memukau seperti sundel bolong." },
+                { name: "Pocong R&B", meaning: "Kamu memiliki suara R&B yang halus dan menggoda seperti pocong." },
+                { name: "Kuntilanak Country", meaning: "Kamu memiliki suara country yang ramah dan menggembirakan seperti kuntilanak." },
+                { name: "Gendruwo Trance", meaning: "Kamu memiliki suara trance yang menghanyutkan seperti gendruwo." },
+                { name: "Buto Ijo Rock", meaning: "Kamu memiliki suara rock yang keras dan bertenaga seperti Buto Ijo." },
+                { name: "Banaspati Disco", meaning: "Kamu memiliki suara disco yang menggoyang dan menyenangkan seperti banaspati." },
+                { name: "Siluman House", meaning: "Kamu memiliki suara house yang ritmis dan bersemangat seperti siluman." },
+                { name: "Kalong Ambient", meaning: "Kamu memiliki suara ambient yang tenang dan meditatif seperti kalong." },
+                { name: "Bajang Trap", meaning: "Kamu memiliki suara trap yang catchy dan modern seperti bajang." },
+                { name: "Kunti Acapella", meaning: "Kamu memiliki suara acapella yang jernih dan harmonis seperti kunti." },
+                { name: "Genderuwo Dubstep", meaning: "Kamu memiliki suara dubstep yang menghentak dan dinamis seperti genderuwo." },
+                { name: "Leak Electro", meaning: "Kamu memiliki suara elektro yang futuristik dan energik seperti leak." },
+                { name: "Wewe Gombel Gospel", meaning: "Kamu memiliki suara gospel yang penuh semangat dan pengharapan seperti wewe gombel." },
+                { name: "Sundel Bolong Techno", meaning: "Kamu memiliki suara techno yang cepat dan bersemangat seperti sundel bolong." },
+                { name: "Demang Ska", meaning: "Kamu memiliki suara ska yang ceria dan menghibur seperti demang." },
+                { name: "Buto Ijo Indie", meaning: "Kamu memiliki suara indie yang unik dan eksentrik seperti Buto Ijo." },
+                { name: "Jenglot K-Pop", meaning: "Kamu memiliki suara K-Pop yang catchy dan populer seperti jenglot." },
+                { name: "Banaspati Salsa", meaning: "Kamu memiliki suara salsa yang ritmis dan penuh semangat seperti banaspati." },
+                { name: "Siluman Tango", meaning: "Kamu memiliki suara tango yang penuh gairah dan elegan seperti siluman." },
+                { name: "Kalong Polka", meaning: "Kamu memiliki suara polka yang ceria dan bersemangat seperti kalong." },
+                { name: "Bajang Reggaeton", meaning: "Kamu memiliki suara reggaeton yang menggoyang dan penuh energi seperti bajang." },
+                { name: "Kunti Orchestral", meaning: "Kamu memiliki suara orkestra yang megah dan menggetarkan seperti kunti." },
+                { name: "Genderuwo Funk", meaning: "Kamu memiliki suara funk yang groovy dan penuh semangat seperti genderuwo." },
+                { name: "Leak Bossa Nova", meaning: "Kamu memiliki suara bossa nova yang santai dan menenangkan seperti leak." },
+                { name: "Wewe Gombel Samba", meaning: "Kamu memiliki suara samba yang ritmis dan penuh kehidupan seperti wewe gombel." },
+                { name: "Sundel Bolong Chillout", meaning: "Kamu memiliki suara chillout yang tenang dan santai seperti sundel bolong." },
+                { name: "Demang Grunge", meaning: "Kamu memiliki suara grunge yang kasar dan penuh emosi seperti demang." },
+                { name: "Gendruwo Gospel", meaning: "Kamu memiliki suara gospel yang mendalam dan menyentuh hati seperti gendruwo." },
+                { name: "Palasik Blues Rock", meaning: "Kamu memiliki suara blues rock yang soulful dan menggetarkan seperti palasik." },
+                { name: "Siluman Country Rock", meaning: "Kamu memiliki suara country rock yang energetik dan bertenaga seperti siluman." },
+                { name: "Buto Ijo Jazz Fusion", meaning: "Kamu memiliki suara jazz fusion yang kompleks dan dinamis seperti Buto Ijo." },
+                { name: "Jenglot Classical Crossover", meaning: "Kamu memiliki suara classical crossover yang elegan dan menggetarkan seperti jenglot." },
+                { name: "Leak World Music", meaning: "Kamu memiliki suara world music yang eklektik dan penuh warna seperti leak." },
+                { name: "Bajang Gothic Metal", meaning: "Kamu memiliki suara gothic metal yang gelap dan penuh emosi seperti bajang." },
+                { name: "Kuntilanak Post-Rock", meaning: "Kamu memiliki suara post-rock yang atmosferik dan eksperimental seperti kuntilanak." },
+                { name: "Wewe Gombel Synthwave", meaning: "Kamu memiliki suara synthwave yang futuristik dan nostalgik seperti wewe gombel." }
+                ];
+                const khodam = khodams[Math.floor(Math.random() * khodams.length)];
+                document.getElementById('khodamName').innerText = `Khodam: ${khodam.name}`;
+                document.getElementById('khodamMeaning').innerText = khodam.meaning;
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('loading').style.display = 'none'; // Sembunyikan spinner
+            }, 1000); // Delay untuk simulasi loading
+        }
+
+        function resetForm() {
+            document.getElementById('nameInput').value = '';
+            document.getElementById('result').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
